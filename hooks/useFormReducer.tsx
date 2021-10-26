@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback, useLayoutEffect } from 'react';
 import { useImmerReducer } from 'use-immer';
+import { keys } from 'ts-transformer-keys';
 //
-import { inputKeys, inputNames } from '../components/ProductForm';
 import {
   allValuesExists,
   descAndUrlBoundaries,
@@ -9,75 +9,76 @@ import {
   checkPrice,
 } from '../utils';
 
-type AdjustmentAction = {
-  type: 'update_input';
-  payload: { title: inputKeys; value: string };
-};
-
-export type StateType = {
-  inputValues: inputNames;
-  inputStatuses: {
-    [key in inputKeys]: boolean;
-  };
-  inputErrMessages: {
-    [key in inputKeys]: string;
-  };
-  formValid: boolean;
-};
-
-const reducer = (state: StateType, action: AdjustmentAction): StateType => {
-  switch (action.type) {
-    case 'update_input': {
-      const { title, value } = action.payload;
-
-      state.inputValues[title] = value;
-      state.inputStatuses[title] = true;
-      state.inputErrMessages[title] = '';
-
-      // Validation
-      descAndUrlBoundaries(value, state, title);
-      checkPrice(value, state, title);
-      allValuesExists(value, state, title);
-      checkOverallFormValidity(state);
-
-      return state;
-    }
-    default:
-      return state;
-  }
-};
-
-// STRONGLY CONNECTED TO PRODUCT FORM
-const useFormReducer = (inputs: inputNames) => {
-  const initialState: StateType = {
+function useFormReducer<T>(inputs: T) {
+  type StateType = {
     inputValues: {
-      title: '',
-      price: '',
-      description: '',
-      url: '',
-    },
+      [key in keyof T]?: string;
+    };
     inputStatuses: {
-      title: inputs.title ? true : false,
-      price: inputs.title ? true : false,
-      description: inputs.title ? true : false,
-      url: inputs.title ? true : false,
-    },
+      [key in keyof T]?: boolean;
+    };
     inputErrMessages: {
-      title: '',
-      price: '',
-      description: '',
-      url: '',
-    },
-    // if one of the incoming value is defined, we are editing then so form is valid
-    formValid: inputs.title ? true : false,
+      [key in keyof T]?: string;
+    };
+    formValid: boolean;
   };
 
+  let initialState: StateType = {
+    inputValues: {},
+    inputStatuses: {},
+    inputErrMessages: {},
+    formValid: false,
+  };
+
+  type AdjustmentAction = {
+    type: 'update_input';
+    payload: { title: keyof T; value: string };
+  };
+
+  const populateValues = useCallback(() => {
+    for (const [key, value] of Object.entries(inputs)) {
+      initialState.inputValues[key as keyof T] = value;
+      initialState.inputStatuses[key as keyof T] = inputs[key as keyof T]
+        ? true
+        : false;
+      initialState.inputErrMessages[key as keyof T] = '';
+      initialState.formValid = inputs[key as keyof T] ? true : false;
+    }
+  }, [inputs]);
+
+  useLayoutEffect(() => {
+    populateValues();
+  }, [inputs]);
+
+  const reducer = useCallback(
+    (state: StateType, action: AdjustmentAction): StateType => {
+      switch (action.type) {
+        case 'update_input': {
+          const { title, value } = action.payload;
+
+          state.inputValues[title] = value;
+          state.inputStatuses[title] = true;
+          state.inputErrMessages[title] = '';
+          state.formValid = true;
+
+          // TODO: VALIDATION
+
+          return state;
+        }
+        default:
+          return state;
+      }
+    },
+    [inputs]
+  );
+
+  //@ts-ignore
   const [state, dispatch] = useImmerReducer(reducer, {
     ...initialState,
     inputValues: inputs,
   });
 
   return { state, dispatch };
-};
+}
 
 export default useFormReducer;

@@ -6,12 +6,14 @@ import {
   KeyboardAvoidingView,
   Platform,
   View,
+  Text,
 } from 'react-native';
 //
 import Button from './Button';
 import useFormReducer from '../hooks/useFormReducer';
 import Input from './Input';
 import { ScrollView } from 'react-native-gesture-handler';
+import { keys } from 'ts-transformer-keys';
 
 export interface inputNames {
   title: string;
@@ -41,7 +43,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   buttonTitle,
   submitFunc,
 }) => {
-  const { state, dispatch } = useFormReducer({
+  const { state, dispatch } = useFormReducer<inputNames>({
     title,
     price,
     description,
@@ -82,7 +84,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             onChangeText={value => onChangeText(value, inputName)}
             type={inputName === 'url' ? 'fullWidth' : 'contained'}
             key={inputName}
-            errMessage={state.inputErrMessages[inputName]}
+            errMessage={state.inputErrMessages[inputName] || ''}
           />
         ))}
 
