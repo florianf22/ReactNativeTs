@@ -1,14 +1,8 @@
 import React from 'react';
-import { Platform, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-import {
-  createNativeStackNavigator,
-  NativeStackScreenProps,
-} from '@react-navigation/native-stack';
-import ItemListScreen from '../screens/ItemListScreen';
-import ItemDetailScreen from '../screens/ItemDetailScreen';
-import CartScreen from '../screens/CartScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 //
 import { ProductsStackNavigatorParamList } from './types';
 import Colors from '../constants/Colors';

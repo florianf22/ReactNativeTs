@@ -74,6 +74,7 @@ const ItemListScreen: React.FC<Props & ItemListScreenProps> = ({
         onRefresh={() => setItems()}
         refreshing={loading}
       />
+      <Button title="Logout" onPress={() => {}} />
     </View>
   );
 };

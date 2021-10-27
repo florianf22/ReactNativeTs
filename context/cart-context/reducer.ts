@@ -7,12 +7,12 @@ type AdjustmentActionAdd = {
 
 type AdjustmentActionRemove = {
   type: 'remove_from_cart';
-  payload: number;
+  payload: string;
 };
 
 type AdjustmentActionQuantity = {
   type: 'increment' | 'decrement';
-  payload: number;
+  payload: string;
 };
 
 type AdjustmentActionSort = {

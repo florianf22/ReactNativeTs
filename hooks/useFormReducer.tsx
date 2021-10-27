@@ -72,7 +72,7 @@ function useFormReducer<T>(inputs: T) {
     [inputs]
   );
 
-  //@ts-ignore
+  // @ts-ignore
   const [state, dispatch] = useImmerReducer(reducer, {
     ...initialState,
     inputValues: inputs,

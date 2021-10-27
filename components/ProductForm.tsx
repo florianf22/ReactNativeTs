@@ -1,27 +1,24 @@
 import React, { useState } from 'react';
 import {
   StyleSheet,
-  SafeAreaView,
   Alert,
   KeyboardAvoidingView,
-  Platform,
-  View,
-  Text,
+  ScrollView,
 } from 'react-native';
 //
 import Button from './Button';
 import useFormReducer from '../hooks/useFormReducer';
 import Input from './Input';
-import { ScrollView } from 'react-native-gesture-handler';
-import { keys } from 'ts-transformer-keys';
+// import { keys } from 'ts-transformer-keys';
 
-export interface inputNames {
+interface inputNames {
   title: string;
   price: string;
   description: string;
   url: string;
 }
-export type inputKeys = keyof inputNames;
+
+type inputKeys = keyof inputNames;
 
 const basicInputs = ['title', 'price', 'description', 'url'] as const;
 

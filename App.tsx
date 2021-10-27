@@ -1,11 +1,24 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import AppLoading from 'expo-app-loading';
 //
 import { ItemContextProvider } from './context/items-context/ItemsContext';
 import { CartContextProvider } from './context/cart-context/CartContext';
+import {
+  AuthContext,
+  AuthContextProvider,
+} from './context/auth-context/AuthContext';
 import RootNavigator from './navigators/TabNavigator';
+import AuthNavigator from './navigators/AuthNavigator';
+
+const AppNavigator: React.FC = ({ children }) => {
+  const { token } = useContext(AuthContext);
+
+  if (!token) return <AuthNavigator />;
+
+  return <RootNavigator />;
+};
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,12 +31,14 @@ export default function App() {
   }
 
   return (
-    <CartContextProvider>
-      <ItemContextProvider>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
-      </ItemContextProvider>
-    </CartContextProvider>
+    <AuthContextProvider>
+      <CartContextProvider>
+        <ItemContextProvider>
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </ItemContextProvider>
+      </CartContextProvider>
+    </AuthContextProvider>
   );
 }

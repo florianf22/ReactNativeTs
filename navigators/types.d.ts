@@ -14,6 +14,11 @@ export type ProductsStackNavigatorParamList = {
   ProductCrud: { itemId?: string; title?: string };
 };
 
+export type AuthStackNavigatorParamList = {
+  Login: undefined;
+  Signup: undefined;
+};
+
 export type RootNavigatorParamList = {
   Home: NavigatorScreenParams<MainStackNavigatorParamList>;
   Orders: undefined;
